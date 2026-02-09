@@ -1,14 +1,16 @@
 
 from pathlib import Path
 import os
+import decouple
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'django-insecure-(*$hf=)i$lu6nk+#3$%xec#l&v0!^(yg9^5)%7197&43b$bw71'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+SECRET_KEY = decouple.config('SECRET_KEY', cast=str)
+DEBUG = decouple.config('DEBUG', cast=bool)
+ALLOWED_HOSTS = decouple.config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')])
 INSTALLED_APPS = [
     'app',
     'tailwind',
     'theme',
+    'decouple',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -17,10 +19,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
-TAILWIND_APP_NAME = 'theme'
+INTERNAL_IPS = decouple.config('INTERNAL_IPS', cast=lambda v: [s.strip() for s in v.split(',')])
+TAILWIND_APP_NAME = decouple.config('TAILWIND_APP_NAME', cast=str)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

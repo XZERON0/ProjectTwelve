@@ -1,13 +1,7 @@
-{% load tailwind_tags %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% tailwind_css %}
-    <title>Document</title>
-</head>
-<body class="bg-white">
-    
-</body>
-</html>
+{%extends "base.html" %}
+{%block title%}Soneone{%endblock%}
+{%block head%}{%endblock%}
+{%block body%}
+<div class="header fixed bg-white px-3 py-4 w-[100%] "><p class="text-white">test</p></div>
+<div class="w-[100%] p-12 bg-amber-500">text</div>
+{%endblock%}
