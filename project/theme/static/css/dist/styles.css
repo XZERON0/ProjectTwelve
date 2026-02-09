@@ -13,6 +13,7 @@
     --color-gray-50: oklch(98.5% 0.002 247.839);
     --color-gray-100: oklch(96.7% 0.003 264.542);
     --color-black: #000;
+    --color-white: #fff;
     --spacing: 0.25rem;
     --text-3xl: 1.875rem;
     --text-3xl--line-height: calc(2.25 / 1.875);
@@ -219,8 +220,8 @@
   .bg-gray-100 {
     background-color: var(--color-gray-100);
   }
-  .bg-red-100 {
-    background-color: var(--color-red-100);
+  .bg-white {
+    background-color: var(--color-white);
   }
   .text-center {
     text-align: center;

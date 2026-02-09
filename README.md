@@ -17,6 +17,9 @@
 
 Разработка веб сайта по учету товаров, их приход и расход, составление отчета по взаимодействию с товарами за определенный промежуток времени (за день, за неделю, за месяць)
 
+## Design
+[Link](https://www.figma.com/make/nOLZaT3xuwekPrnEfFrXbG/Retail-Store-App--Community-?fullscreen=1&t=azQ6wcFXT7Xra0lN-1)
+
 ## Участники проекта
 
 * Бэкенд (Анеля)
