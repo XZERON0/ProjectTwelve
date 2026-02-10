@@ -11,10 +11,10 @@ source venv/scripts/activate #bash
 ```python
 pip install -r requirements.txt
 ```
-4. Перейдите в директорию **project**
-5. Запустите tailwind и сервер
+4. Создайте .env и заполните значение, которые используются с библиотекой decouple 
+5. Перейдите в директорию **project**
+6. Запустите tailwind и сервер
 ```
 python manage.py tailwind start
 python manage.py runserver
 ```
-
