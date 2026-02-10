@@ -1,1 +1,20 @@
 # Запуск проекта
+Для просмотра, нажмите ``CTRL+SHIFT+V`` если вы на vs code
+1. Нужно будет клонировать [репозиторий (кликните)](https://github.com/XZERON0/ProjectTwelve.git)  
+2. Создать виртуальное окружение и позже перейдете по нему 
+```pyhon
+python -m venv venv
+venv/scripts/activate.ps1 # window
+source venv/scripts/activate #bash
+```
+3.  Скачать зависимости python
+```python
+pip install -r requirements.txt
+```
+4. Перейдите в директорию **project**
+5. Запустите tailwind и сервер
+```
+python manage.py tailwind start
+python manage.py runserver
+```
+
