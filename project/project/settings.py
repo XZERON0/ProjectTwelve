@@ -2,6 +2,7 @@
 from pathlib import Path
 import os
 import decouple
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = decouple.config('SECRET_KEY', cast=str)
 DEBUG = decouple.config('DEBUG', cast=bool)
