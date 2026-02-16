@@ -1,15 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-# ! Убрал класс User, так как он уже есть
-# class User(models.Model):
-#     username = models.CharField(max_length=100)
-#     password = models.CharField(max_length=20)
-#     role = models.CharField(max_length=20)
-
-#     def __str__(self):
-#         return self.username
-    
-# Добавить классы Meta и подробнее в админке описал
 class Supplier(models.Model):
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=20)

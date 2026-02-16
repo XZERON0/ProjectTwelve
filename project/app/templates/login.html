@@ -2,4 +2,15 @@
 {%block title%}Soneone{%endblock%}
 {%block head%}{%endblock%}
 
-{%block body%}{%endblock%}
+{%block body%}
+<form action="" method="post" >
+    {% csrf_token %}
+    <div class="flex flex-col gap-4 justify-center items-center ">
+        <input type="text" class="outline" name="username" placeholder="Username" class="input-field">
+        <input type="password" class="outline" name="password" placeholder="Password" class="input-field">
+        <button type="submit" class="submit-button">Login</button>
+        <!-- Error -->
+         <span>{{ form.errors }}</span>
+    </div>
+</form>
+{%endblock%}

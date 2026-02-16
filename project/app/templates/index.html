@@ -1,7 +1,17 @@
 {%extends "base.html" %}
-{%block title%}Soneone{%endblock%}
+{%block title%}Soneone {%if request.user.is_authenticated%}{{ request.user.username }}{%endif%}{%endblock%}
 {%block head%}{%endblock%}
 {%block body%}
-<div class="header fixed bg-white px-3 py-4 w-[100%] "><p class="text-white">test</p></div>
-<div class="w-[100%] p-12 bg-amber-500">text</div>
+<div class="header flex flex-row justify-around items-center  fixed bg-white px-3 py-4 w-[100%] ">
+    <div class="logo text-2xl font-bold">Soneone</div>
+    <div class="flex flex-row gap-4">
+
+        <div class="logo text-2xl font-bold">Soneone</div>
+        <div class="logo text-2xl font-bold">Soneone</div>
+    </div>
+    <div class="logo text-  2xl font-bold">Soneone</div>
+    <a href="{%url 'logout_user'%}" class="logout-link">Logout</a>
+        
+</div>
+<div class="w-[100%] h-100 p-12 bg-amber-500 flex justify-center items-center">text</div>
 {%endblock%}

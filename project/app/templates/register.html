@@ -1,5 +1,16 @@
 {%extends 'base.html'%}
-{%block title%}Soneone{%endblock%}
+{%block title%}Register user{%endblock%}
 {%block head%}{%endblock%}
-
-{%block body%}{%endblock%}
+{%block body%}
+<form action="" method="post">
+    <div class="flex flex-col gap-4 justify-center items-center ">
+        {% csrf_token %}
+        <input type="text" class="outline" name="username" placeholder="Username" class="input-field">
+        <input type="password" class="outline" name="password1" placeholder="Password" class="input-field">
+        <input type="password" class="outline" name="password2" placeholder="Confirm Password" class="input-field">
+        <button type="submit" class="submit-button">Register</button>
+        <!-- Error -->
+         <span>{{ form.errors }}</span>
+    </div>
+</form>
+{%endblock%}
