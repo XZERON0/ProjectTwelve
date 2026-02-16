@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 def index(request):
     return render(request, 'index.html')
-
+    
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)

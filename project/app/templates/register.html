@@ -1,5 +1,5 @@
 {%extends 'base.html'%}
-{%block title%}Register user{%endblock%}
+{%block title%}Регистрация{%endblock%}
 {%block head%}{%endblock%}
 {%block body%}
 <form action="" method="post">
@@ -9,7 +9,6 @@
         <input type="password" class="outline" name="password1" placeholder="Password" class="input-field">
         <input type="password" class="outline" name="password2" placeholder="Confirm Password" class="input-field">
         <button type="submit" class="submit-button">Register</button>
-        <!-- Error -->
          <span>{{ form.errors }}</span>
     </div>
 </form>
