@@ -1,15 +1,53 @@
-{%extends 'base.html'%}
-{%block title%}Регистрация{%endblock%}
-{%block head%}{%endblock%}
-{%block body%}
-<form action="" method="post">
-    <div class="flex flex-col gap-4 justify-center items-center ">
-        {% csrf_token %}
-        <input type="text" class="outline" name="username" placeholder="Username" class="input-field">
-        <input type="password" class="outline" name="password1" placeholder="Password" class="input-field">
-        <input type="password" class="outline" name="password2" placeholder="Confirm Password" class="input-field">
-        <button type="submit" class="submit-button">Register</button>
-         <span>{{ form.errors }}</span>
+{% extends 'base.html' %}
+{% block title %}Регистрация{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex items-center justify-center bg-[#0a0a0a] px-4">
+    <div
+        class="w-full max-w-md p-10 bg-black border border-white/10 rounded-3xl shadow-[0_0_50px_-12px_rgba(255,255,255,0.1)]">
+        <div class="mb-10 text-left">
+            <h1 class="text-4xl font-light text-white tracking-tight">Join us.</h1>
+            <p class="text-gray-500 mt-2 text-sm uppercase tracking-widest font-medium">Создание нового профиля</p>
+        </div>
+
+        <form action="" method="post" class="space-y-6">
+            {% csrf_token %}
+
+            <div class="group">
+                <input type="text" name="username" placeholder="Username"
+                    class="w-full px-0 py-3 bg-transparent border-b border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-white transition-colors duration-300 text-lg">
+            </div>
+
+            <div class="group">
+                <input type="password" name="password1" placeholder="Password"
+                    class="w-full px-0 py-3 bg-transparent border-b border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-white transition-colors duration-300 text-lg">
+            </div>
+
+            <div class="group">
+                <input type="password" name="password2" placeholder="Confirm Password"
+                    class="w-full px-0 py-3 bg-transparent border-b border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-white transition-colors duration-300 text-lg">
+            </div>
+
+            {% if form.errors %}
+            <div class="text-xs text-gray-500 font-mono italic">
+                {{ form.errors }}
+            </div>
+            {% endif %}
+
+            <div class="pt-4">
+                <button type="submit"
+                    class="w-full py-4 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all duration-300 active:scale-95">
+                    CREATE ACCOUNT
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-8 text-center">
+            <a href="/login"
+                class="text-xs text-gray-500 hover:text-white uppercase tracking-tighter transition-colors">
+                Уже есть аккаунт? Войти
+            </a>
+        </div>
     </div>
-</form>
-{%endblock%}
+</div>
+{% endblock %}

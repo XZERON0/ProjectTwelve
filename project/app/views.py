@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 def index(request):
     return render(request, 'index.html')
-    
+
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -24,7 +24,11 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 return render(request, 'index.html')
+            else:
+                form.add_error(None, 'Неверные имя пользователя или пароль')
+                print(form.error_messages)
     form = AuthenticationForm()
+    print(form.errors)
     return render(request, 'login.html', {'form': form})
 
 def logout_user(request):
