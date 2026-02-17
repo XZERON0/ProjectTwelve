@@ -39,7 +39,6 @@ class Income(models.Model):
     quantity = models.FloatField
     price = models.DecimalField(max_digits=5, decimal_places=2)
     total_sum = models.DecimalField(max_digits=5, decimal_places=2)
-    accepted_by = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField
     class Meta:
         verbose_name = "Поставка"

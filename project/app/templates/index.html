@@ -1,18 +1,129 @@
-{%extends "base.html" %}
-{%block title%}Мой склад{%endblock%}
-{%block head%}{%endblock%}
-{%block body%}
-<div class="header flex flex-row justify-around items-center  fixed bg-white px-3 py-4 w-[100%] ">
-    <div class="flex flex-row gap-4">
-        <div class="logo text-2xl font-bold">Soneone</div>
-        <div class="logo text-2xl font-bold">Soneone</div>
-    </div>
-    <div class="logo text-  2xl font-bold">Soneone</div>
-    {%if request.user.is_authenticated%}
-    <a href="{%url 'logout_user'%}" class="logout-link">Logout</a>
-    {%else%}
-    <a href="{%url 'register'%}">Register</a>
-    {%endif%}
+{% extends "base.html" %}
+{% load tailwind_tags %}
+{% block title %}Главная — СКЛАД{% endblock %}
+{% block head %}{% endblock %}
+{% block body %}
+<div class="grid-bg min-h-screen bg-white dark:bg-black text-black dark:text-white">
+    <header class="border-b-2 border-black dark:border-white bg-white dark:bg-black">
+        <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+            <span class="text-xl font-bold">[СКЛАД]</span>
+            <div class="flex items-center gap-6">
+                <span class="text-sm hidden sm:block">
+                    Привет,
+                    {%if request.user.is_authenticated%}<strong>
+                        {{user.username}}
+                        {%else%}<strong>Пользователь</strong>{%endif%}</strong>
+                </span>
+                {%if user.is_authenticated%}
+                <a href="{% url 'logout_user' %}" class="text-sm font-bold border-2 border-black dark:border-white px-4 py-2
+                          hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">
+                    Выход
+                </a>
+                {%else%}
+                <a href="{% url 'login' %}" class="text-sm font-bold border-2 border-black dark:border-white px-4 py-2
+                          hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">
+                    Вход
+                </a>
+                {%endif%}
+            </div>
+        </div>
+    </header>
+    <main class="max-w-6xl mx-auto px-6 py-14">
+        <div class="mb-14 anim-1">
+            <h1 class="text-5xl md:text-7xl font-bold mb-3 leading-none">
+                ДОБРО<br>ПОЖАЛОВАТЬ
+            </h1>
+            <p class="text-lg text-gray-500 dark:text-gray-400">
+                Система готова к работе. Выберите действие.
+            </p>
+        </div>
+        <!-- Быстрые действия -->
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-14 anim-2">
+            <a href="#" class="card-action border-black dark:border-white bg-white dark:bg-black p-7 block">
+                <div class="text-3xl font-bold mb-3">+</div>
+                <h3 class="font-bold text-lg mb-1">ДОБАВИТЬ ТОВАР</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Внести новую позицию в базу данных</p>
+            </a>
+            <a href="{%url 'goods'%}"
+                class="card-action border-black dark:border-white bg-black dark:bg-white text-white dark:text-black p-7 block">
+                <div class="text-3xl font-bold mb-3">[ ]</div>
+                <h3 class="font-bold text-lg mb-1">ПРОСМОТР СКЛАДА</h3>
+                <p class="text-sm opacity-60">Все товары и их остатки</p>
+            </a>
+            <a href="#" class="card-action border-black dark:border-white bg-white dark:bg-black p-7 block">
+                <div class="text-3xl font-bold mb-3">//</div>
+                <h3 class="font-bold text-lg mb-1">ПОИСК</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Найти по названию или коду</p>
+            </a>
+            <a href="#" class="card-action border-black dark:border-white bg-white dark:bg-black p-7 block">
+                <div class="text-3xl font-bold mb-3">{ }</div>
+                <h3 class="font-bold text-lg mb-1">ОТЧЁТЫ</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Статистика и аналитика</p>
+            </a>
+            <a href="#" class="card-action border-black dark:border-white bg-white dark:bg-black p-7 block">
+                <div class="text-3xl font-bold mb-3">→</div>
+                <h3 class="font-bold text-lg mb-1">ОПЕРАЦИИ</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Приход, расход, перемещение</p>
+            </a>
+        </div>
+        <!-- Статистика -->
+        <div class="border-2 border-black dark:border-white bg-white dark:bg-black p-8 mb-8 anim-3">
+            <h2 class="text-xl font-bold mb-6">СТАТИСТИКА</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="border-l-4 border-black dark:border-white pl-4">
+                    <div class="text-3xl font-bold mb-1">{{ total_products|default:"0" }}</div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400 uppercase">Всего товаров</div>
+                </div>
+                <div class="border-l-4 border-black dark:border-white pl-4">
+                    <div class="text-3xl font-bold mb-1">{{ low_stock|default:"0" }}</div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400 uppercase">Заканчиваются</div>
+                </div>
+                <div class="border-l-4 border-black dark:border-white pl-4">
+                    <div class="text-3xl font-bold mb-1">{{ total_value|default:"0" }}<span class="text-lg"></span>
+                    </div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400 uppercase">Общая стоимость</div>
+                </div>
+                <div class="border-l-4 border-black dark:border-white pl-4">
+                    <div class="text-3xl font-bold mb-1">{{ categories|default:"0" }}</div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400 uppercase">Категорий</div>
+                </div>
+            </div>
+        </div>
+        <!-- Последние операции -->
+        <div class="border-2 border-black dark:border-white bg-white dark:bg-black p-8 anim-4">
+            <h2 class="text-xl font-bold mb-6">ПОСЛЕДНИЕ ОПЕРАЦИИ</h2>
+            {% if recent_operations %}
+            <div class="space-y-0">
+                {% for op in recent_operations %}
+                <div
+                    class="flex items-center justify-between py-4 border-b border-gray-100 dark:border-gray-900 last:border-0">
+                    <div class="flex items-center gap-4">
+                        <span class="font-bold text-sm">{{ op.type }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ op.product_name }}</span>
+                    </div>
+                    <span class="text-xs text-gray-400">{{ op.date }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-10">
+                {% for log in all_log %}
+                <p class="text-white">{{ log.action_time }}: {{ log.object_repr }}</p>
+                {% empty %}
+                <p class="text-gray-400 text-sm mb-1">Операций пока нет</p>
+                <p class="text-gray-300 dark:text-gray-600 text-xs">Начните с добавления первого товара</p>
+                {% endfor %}
+
+            </div>
+            {% endif %}
+        </div>
+    </main>
+    <footer class="border-t-2 border-black dark:border-white mt-12">
+        <div
+            class="max-w-6xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-gray-400">
+            <span>СКЛАД v1.0.0 — Локальная система учёта</span>
+            <span>Все данные сохранены на вашем компьютере</span>
+        </div>
+    </footer>
 </div>
-<div class="w-[100%] h-100 p-12 bg-amber-500 flex justify-center items-center">text</div>
-{%endblock%}
+{% endblock %}

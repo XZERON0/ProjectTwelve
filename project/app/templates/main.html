@@ -1,10 +1,388 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вас приветствует самый простой и удобный каталог в мире!</title>
+    <title>СКЛАД — Учёт товаров для магазина у дома</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --black: #000;
+            --white: #fff;
+            --gray:  #6b7280;
+            --gray-light: #f3f3f3;
+            --border: 2px solid #000;
+            --font: 'Space Mono', monospace;
+            --max-w: 1100px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font);
+            background: var(--white);
+            color: var(--black);
+            min-height: 100vh;
+            background-image:
+                linear-gradient(#00000006 1px, transparent 1px),
+                linear-gradient(90deg, #00000006 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* ─── Animations ─── */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        .anim-1 { opacity: 0; animation: slideUp .7s ease-out 0s    forwards; }
+        .anim-2 { opacity: 0; animation: slideUp .7s ease-out .15s  forwards; }
+        .anim-3 { opacity: 0; animation: slideUp .7s ease-out .3s   forwards; }
+        .anim-4 { opacity: 0; animation: slideUp .7s ease-out .45s  forwards; }
+        .anim-fade { opacity: 0; animation: fadeIn .6s ease-out 0s  forwards; }
+
+        /* ─── Layout ─── */
+        .container {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ─── Header ─── */
+        header {
+            border-bottom: var(--border);
+            background: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        header .inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            max-width: var(--max-w);
+            margin: 0 auto;
+        }
+        .logo { font-size: 1.4rem; font-weight: 700; }
+        .version { font-size: .8rem; color: var(--gray); }
+
+        /* ─── Hero ─── */
+        .hero { padding: 80px 0 60px; }
+        .hero h1 {
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 28px;
+        }
+        .hero h1 span { font-size: clamp(2rem, 6vw, 4.5rem); }
+        .hero p {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            max-width: 600px;
+            color: #333;
+            line-height: 1.7;
+        }
+
+        /* ─── Feature Cards ─── */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 60px 0;
+        }
+        .feature-card {
+            border: var(--border);
+            padding: 32px;
+            background: var(--white);
+        }
+        .feature-card.inverted {
+            background: var(--black);
+            color: var(--white);
+        }
+        .feature-card .icon {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: block;
+        }
+        .feature-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .feature-card p {
+            font-size: .85rem;
+            line-height: 1.6;
+            opacity: .7;
+        }
+
+        /* ─── Download Section ─── */
+        .download-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .download-card {
+            border: var(--border);
+            padding: 36px;
+            background: var(--white);
+            transition: transform .25s, box-shadow .25s;
+        }
+        .download-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 8px 8px 0 var(--black);
+        }
+
+        .download-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        .download-card h3 { font-size: 1.5rem; font-weight: 700; }
+
+        .os-icon { width: 48px; height: 48px; fill: currentColor; flex-shrink: 0; }
+
+        .download-meta {
+            list-style: none;
+            margin-bottom: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .download-meta li { font-size: .85rem; color: var(--gray); }
+        .download-meta li::before { content: '→ '; }
+
+        .btn-download {
+            display: block;
+            width: 100%;
+            background: var(--black);
+            color: var(--white);
+            border: var(--border);
+            padding: 16px 24px;
+            font-family: var(--font);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background .2s, color .2s, transform .15s;
+        }
+        .btn-download:hover {
+            background: var(--white);
+            color: var(--black);
+            transform: translateX(4px);
+        }
+
+        /* ─── Instructions ─── */
+        .instructions {
+            border: var(--border);
+            padding: 40px;
+            background: var(--white);
+            margin-bottom: 80px;
+        }
+        .instructions h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        .instructions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 32px;
+        }
+        .step-list { font-size: .85rem; }
+        .step-list .os-label {
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .step-list ol {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding-left: 0;
+        }
+        .step-list li { color: #444; line-height: 1.5; }
+        .step-list .code {
+            background: var(--gray-light);
+            padding: 2px 6px;
+            font-family: var(--font);
+            font-size: .8rem;
+        }
+
+        /* ─── Footer ─── */
+        footer {
+            border-top: var(--border);
+            background: var(--white);
+        }
+        footer .inner {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            justify-content: space-between;
+            padding: 28px 24px;
+            max-width: var(--max-w);
+            margin: 0 auto;
+            font-size: .8rem;
+            color: var(--gray);
+        }
+        @media (min-width: 640px) {
+            footer .inner { flex-direction: row; }
+        }
+        footer a { color: inherit; text-decoration: underline; }
+        footer a:hover { text-decoration: none; }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 640px) {
+            .hero { padding: 48px 0 36px; }
+            .instructions { padding: 24px; }
+        }
+    </style>
 </head>
 <body>
+
+    <!-- Header -->
+    <header>
+        <div class="inner">
+            <div class="logo anim-fade">[СКЛАД]</div>
+            <div class="version anim-fade">v1.0.0</div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+
+            <!-- Hero -->
+            <section class="hero">
+                <h1 class="anim-1">
+                    УЧЁТ<br>
+                    ТОВАРОВ<br>
+                    <span>ДЛЯ МАГАЗИНА У ДОМА</span>
+                </h1>
+                <p class="anim-2">
+                    Простая и надёжная система складского учёта.
+                    Работает локально на вашем компьютере —
+                    без серверов, без подписок, без лишних затрат.
+                </p>
+            </section>
+
+            <!-- Features -->
+            <div class="features anim-3">
+                <div class="feature-card">
+                    <span class="icon">//</span>
+                    <h3>ЛОКАЛЬНО</h3>
+                    <p>Все данные хранятся на вашем компьютере. Полный контроль, никакой зависимости от интернета.</p>
+                </div>
+                <div class="feature-card inverted">
+                    <span class="icon">[]</span>
+                    <h3>БЕСПЛАТНО</h3>
+                    <p>Единоразовая установка. Без подписок, без скрытых платежей и ежемесячных расходов.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">{}</span>
+                    <h3>ПРОСТО</h3>
+                    <p>Интуитивный интерфейс. Запускается сразу после установки — никаких настроек серверов.</p>
+                </div>
+            </div>
+
+            <!-- Download -->
+            <section>
+                <h2 class="download-title anim-4">УСТАНОВКА</h2>
+
+                <div class="download-grid anim-4">
+
+                    <!-- Windows -->
+                    <div class="download-card">
+                        <div class="download-card-header">
+                            <h3>WINDOWS</h3>
+                            <svg class="os-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/>
+                            </svg>
+                        </div>
+                        <ul class="download-meta">
+                            <li>Windows 10 / 11</li>
+                            <li>64-bit</li>
+                            <li>~150 МБ</li>
+                        </ul>
+                        <a href="#" class="btn-download">СКАЧАТЬ .EXE</a>
+                    </div>
+
+                    <!-- Linux -->
+                    <div class="download-card">
+                        <div class="download-card-header">
+                            <h3>LINUX</h3>
+                            <svg class="os-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2c5.514 0 10 4.486 10 10s-4.486 10-10 10S2 17.514 2 12 6.486 2 12 2zm-1 5v6H7l5 5 5-5h-4V7h-2z"/>
+                            </svg>
+                        </div>
+                        <ul class="download-meta">
+                            <li>Ubuntu / Debian / Fedora</li>
+                            <li>64-bit</li>
+                            <li>~150 МБ</li>
+                        </ul>
+                        <a href="#" class="btn-download">СКАЧАТЬ .DEB / .RPM</a>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div class="instructions anim-4">
+                    <h3>КАК УСТАНОВИТЬ?</h3>
+                    <div class="instructions-grid">
+                        <div class="step-list">
+                            <span class="os-label">Windows:</span>
+                            <ol>
+                                <li>1. Скачайте файл <span class="code">.exe</span></li>
+                                <li>2. Запустите установщик</li>
+                                <li>3. Следуйте инструкциям на экране</li>
+                                <li>4. Готово — программа запущена</li>
+                            </ol>
+                        </div>
+                        <div class="step-list">
+                            <span class="os-label">Linux (Debian / Ubuntu):</span>
+                            <ol>
+                                <li>1. Скачайте <span class="code">.deb</span> или <span class="code">.rpm</span></li>
+                                <li>2. Откройте терминал</li>
+                                <li>3. <span class="code">sudo dpkg -i склад.deb</span></li>
+                                <li>4. Запустите из меню приложений</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="inner">
+            <span>© 2024 СКЛАД — Система учёта товаров</span>
+            <div style="display:flex; gap: 24px;">
+                <a href="#">Документация</a>
+                <a href="#">Поддержка</a>
+                <a href="#">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>

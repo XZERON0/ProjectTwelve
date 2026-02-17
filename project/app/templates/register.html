@@ -1,53 +1,84 @@
-{% extends 'base.html' %}
-{% block title %}Регистрация{% endblock %}
-
+{% extends "base.html" %}
+{% load tailwind_tags %}
+{% block title %}Регистрация — СКЛАД{% endblock %}
+{% block head %}{% endblock %}
 {% block body %}
-<div class="min-h-screen flex items-center justify-center bg-[#0a0a0a] px-4">
-    <div
-        class="w-full max-w-md p-10 bg-black border border-white/10 rounded-3xl shadow-[0_0_50px_-12px_rgba(255,255,255,0.1)]">
-        <div class="mb-10 text-left">
-            <h1 class="text-4xl font-light text-white tracking-tight">Join us.</h1>
-            <p class="text-gray-500 mt-2 text-sm uppercase tracking-widest font-medium">Создание нового профиля</p>
+<div class="grid-bg min-h-screen bg-white dark:bg-black text-black dark:text-white flex items-center justify-center p-4 py-12">
+    <div class="w-full max-w-md">
+        <div class="mb-10 anim-1 flex items-end justify-between">
+            <div>
+                <h1 class="text-4xl font-bold">[СКЛАД]</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Система учёта товаров</p>
+            </div>
         </div>
+        <div class="border-2 border-black dark:border-white bg-white dark:bg-black p-8 anim-2">
+            <h2 class="text-2xl font-bold mb-8">РЕГИСТРАЦИЯ</h2>
 
-        <form action="" method="post" class="space-y-6">
-            {% csrf_token %}
+            <form method="POST" action="{% url 'register' %}" class="space-y-5">
+                {% csrf_token %}
 
-            <div class="group">
-                <input type="text" name="username" placeholder="Username"
-                    class="w-full px-0 py-3 bg-transparent border-b border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-white transition-colors duration-300 text-lg">
-            </div>
+                {% if messages %}
+                <div class="bg-black dark:bg-white text-white dark:text-black p-4 text-sm">
+                    {% for message in messages %}{{ message }}{% endfor %}
+                </div>
+                {% endif %}
 
-            <div class="group">
-                <input type="password" name="password1" placeholder="Password"
-                    class="w-full px-0 py-3 bg-transparent border-b border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-white transition-colors duration-300 text-lg">
-            </div>
-
-            <div class="group">
-                <input type="password" name="password2" placeholder="Confirm Password"
-                    class="w-full px-0 py-3 bg-transparent border-b border-white/20 text-white placeholder-gray-600 focus:outline-none focus:border-white transition-colors duration-300 text-lg">
-            </div>
-
-            {% if form.errors %}
-            <div class="text-xs text-gray-500 font-mono italic">
-                {{ form.errors }}
-            </div>
-            {% endif %}
-
-            <div class="pt-4">
+                {% if form.errors %}
+                <div class="error-block bg-gray-50 dark:bg-gray-900 p-4 text-sm space-y-1">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <p>• {{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div>
+                    <label for="username" class="block text-sm font-bold mb-2">ЛОГИН</label>
+                    <input type="text" id="username" name="username" required
+                        value="{{ form.username.value|default:'' }}"
+                        placeholder="Латинские буквы и цифры"
+                        class="w-full border-2 border-black dark:border-white bg-transparent px-4 py-3 text-sm
+                               focus:outline-none placeholder-gray-400 dark:placeholder-gray-600">
+                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Минимум 3 символа</p>
+                </div>
+                <div>
+                    <label for="password1" class="block text-sm font-bold mb-2">ПАРОЛЬ</label>
+                    <input type="password" id="password1" name="password1" required
+                        placeholder="Минимум 8 символов"
+                        class="w-full border-2 border-black dark:border-white bg-transparent px-4 py-3 text-sm
+                               focus:outline-none placeholder-gray-400 dark:placeholder-gray-600">
+                </div>
+                <div>
+                    <label for="password2" class="block text-sm font-bold mb-2">ПОВТОР ПАРОЛЯ</label>
+                    <input type="password" id="password2" name="password2" required
+                        placeholder="Повторите пароль"
+                        class="w-full border-2 border-black dark:border-white bg-transparent px-4 py-3 text-sm
+                               focus:outline-none placeholder-gray-400 dark:placeholder-gray-600">
+                </div>
+                <div class="flex items-start gap-3 pt-1">
+                    <input type="checkbox" id="terms" name="terms" required
+                        class="w-4 h-4 mt-0.5 border-2 border-black dark:border-white accent-black dark:accent-white flex-shrink-0">
+                    <label for="terms" class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                        Я понимаю, что все данные хранятся локально на моём компьютере и беру за них ответственность.
+                    </label>
+                </div>
                 <button type="submit"
-                    class="w-full py-4 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all duration-300 active:scale-95">
-                    CREATE ACCOUNT
+                    class="btn-main w-full bg-black dark:bg-white text-white dark:text-black
+                           py-4 font-bold border-2 border-black dark:border-white
+                           hover:bg-white hover:text-black dark:hover:bg-black dark:hover:text-white">
+                    СОЗДАТЬ АККАУНТ →
                 </button>
+            </form>
+            <div class="mt-6 pt-6 border-t-2 border-gray-100 dark:border-gray-900 text-sm text-center">
+                Уже есть аккаунт?
+                <a href="{% url 'login' %}" class="font-bold underline hover:no-underline ml-1">
+                    Войти
+                </a>
             </div>
-        </form>
-
-        <div class="mt-8 text-center">
-            <a href="/login"
-                class="text-xs text-gray-500 hover:text-white uppercase tracking-tighter transition-colors">
-                Уже есть аккаунт? Войти
-            </a>
         </div>
+        <p class="mt-8 text-center text-xs text-gray-400 anim-3">
+            После регистрации вы получите полный доступ к системе
+        </p>
     </div>
 </div>
 {% endblock %}

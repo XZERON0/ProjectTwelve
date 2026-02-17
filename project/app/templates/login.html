@@ -1,34 +1,55 @@
-{% extends 'base.html' %}
-{% block title %}Логин{% endblock %}
+{% extends "base.html" %}
+{% load tailwind_tags %}
+{% block title %}Вход — СКЛАД{% endblock %}
+{% block head %}{% endblock %}
 {% block body %}
 <div
-    class="min-h-screen flex items-center justify-center bg-white dark:bg-[#0a0a0a] transition-colors duration-300 px-4">
+    class="grid-bg min-h-screen bg-white dark:bg-black text-black dark:text-white flex items-center justify-center p-4">
     <div class="w-full max-w-md">
-        <div
-            class="p-10 bg-white dark:bg-black border border-black/10 dark:border-white/10 rounded-3xl shadow-xl dark:shadow-[0_0_50px_-12px_rgba(255,255,255,0.1)]">
-            <div class="mb-10 text-left">
-                <h1 class="text-4xl font-light text-black dark:text-white tracking-tight">Welcome.</h1>
-                <p class="text-gray-400 mt-2 text-sm uppercase tracking-widest font-medium">Вход в систему</p>
+
+        <!-- Лого + переключатель темы -->
+        <div class="mb-10 anim-1 flex items-end justify-between">
+            <div>
+                <h1 class="text-4xl font-bold">[СКЛАД]</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Система учёта товаров</p>
             </div>
-            <form action="" method="post" class="space-y-6">
+        </div>
+        <!-- Карточка формы -->
+        <div class="border-2 border-black dark:border-white bg-white dark:bg-black p-8 anim-2">
+            <h2 class="text-2xl font-bold mb-8">ВХОД В СИСТЕМУ</h2>
+            <form method="POST" action="{% url 'login' %}" class="space-y-6">
                 {% csrf_token %}
-                <input type="text" name="username" placeholder="Username"
-                    class="w-full px-0 py-3 bg-transparent border-b border-black/20 dark:border-white/20 text-black dark:text-white placeholder-gray-400 focus:outline-none focus:border-black dark:focus:border-white transition-colors text-lg">
-                <input type="password" name="password" placeholder="Password"
-                    class="w-full px-0 py-3 bg-transparent border-b border-black/20 dark:border-white/20 text-black dark:text-white placeholder-gray-400 focus:outline-none focus:border-black dark:focus:border-white transition-colors text-lg">
-                <button type="submit"
-                    class="w-full py-4 bg-black dark:bg-white text-white dark:text-black font-bold rounded-full hover:opacity-80 transition-all active:scale-95 uppercase tracking-widest text-sm">
-                    Login
+                {% if messages %}
+                <div class="bg-black dark:bg-white text-white dark:text-black p-4 text-sm">
+                    {% for message in messages %}{{ message }}{% endfor %}
+                </div>
+                {% endif %}
+                <div>
+                    <label for="username" class="block text-sm font-bold mb-2">ЛОГИН</label>
+                    <input type="text" id="username" name="username" required placeholder="Введите логин" class="w-full border-2 border-black dark:border-white bg-transparent px-4 py-3 text-sm
+                               focus:outline-none placeholder-gray-400 dark:placeholder-gray-600">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-bold mb-2">ПАРОЛЬ</label>
+                    <input type="password" id="password" name="password" required placeholder="Введите пароль" class="w-full border-2 border-black dark:border-white bg-transparent px-4 py-3 text-sm
+                               focus:outline-none placeholder-gray-400 dark:placeholder-gray-600">
+                </div>
+                <button type="submit" class="btn-main w-full bg-black dark:bg-white text-white dark:text-black
+                           py-4 font-bold border-2 border-black dark:border-white
+                           hover:bg-white hover:text-black dark:hover:bg-black dark:hover:text-white">
+                    ВОЙТИ →
                 </button>
-                <span class="text-xs text-red-500 block text-center">{{ form.errors  }}</span>
             </form>
-            <div class="mt-8 text-center">
-                <a href="/register"
-                    class="text-xs text-gray-400 hover:text-black dark:hover:text-white uppercase tracking-tighter transition-colors">
-                    Нет аккаунта? Создать
+            <div class="mt-6 pt-6 border-t-2 border-gray-100 dark:border-gray-900 text-sm text-center">
+                Нет аккаунта?
+                <a href="{% url 'register' %}" class="font-bold underline hover:no-underline ml-1">
+                    Зарегистрироваться
                 </a>
             </div>
         </div>
+        <p class="mt-8 text-center text-xs text-gray-400 anim-3">
+            Все данные хранятся локально на вашем компьютере
+        </p>
     </div>
 </div>
 {% endblock %}
