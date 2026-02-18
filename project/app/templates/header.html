@@ -1,0 +1,39 @@
+<header class="border-b-2 border-black dark:border-white bg-white dark:bg-black">
+    <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+        <span class="text-xl font-bold">[СКЛАД]</span>
+        <div class="flex items-center gap-6">
+            <a href="{% url 'index' %}" class="text-sm font-bold border-2 border-black dark:border-white px-4 py-2
+                          hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">
+                Главная
+            </a>
+            <a href="{% url 'goods' %}" class="text-sm font-bold border-2 border-black dark:border-white px-4 py-2
+                          hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">
+                Товары
+            </a>
+            <a href="/admin" class="text-sm font-bold border-2 border-black dark:border-white px-4 py-2
+                          hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">
+                Админка
+                
+            </a>
+        </div>
+        <div class="flex items-center gap-6">
+            <span class="text-sm hidden sm:block">
+                Привет,
+                {%if request.user.is_authenticated%}<strong>
+                    {{user.username}}
+                    {%else%}<strong>Пользователь</strong>{%endif%}</strong>
+            </span>
+            {%if user.is_authenticated%}
+            <a href="{% url 'logout_user' %}" class="text-sm font-bold border-2 border-black dark:border-white px-4 py-2
+                          hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">
+                Выход
+            </a>
+            {%else%}
+            <a href="{% url 'login' %}" class="text-sm font-bold border-2 border-black dark:border-white px-4 py-2
+                          hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">
+                Вход
+            </a>
+            {%endif%}
+        </div>
+    </>
+</header>

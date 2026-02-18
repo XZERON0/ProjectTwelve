@@ -1,6 +1,74 @@
-{%extends 'base.html'%}
-{%block head%}{%endblock%}
-{%block title%}Все товары — СКЛАД{%endblock%}
-{%block body%}
-
-{%endblock%}
+{% extends 'base.html' %}
+{% block title %}Все товары — СКЛАД{% endblock %}
+{% block body %}
+<div class="min-h-screen bg-black text-white p-8 font-mono">
+    {% include 'header.html' %}
+    <!-- Заголовок -->
+    <div class="mb-10">
+        <h1 class="text-5xl font-black uppercase tracking-tight leading-none mb-3">ТОВАРЫ</h1>
+        <p class="text-gray-500 text-sm tracking-widest">Все позиции на складе</p>
+    </div>
+    <!-- Фильтры -->
+    <form method="GET" class="flex flex-wrap gap-3 mb-8">
+        <input type="text" name="name" value="{{ search_name }}" placeholder="Поиск по названию..."
+            class="bg-black border-2 border-white text-white placeholder-gray-600 px-4 py-2 text-sm font-mono focus:outline-none w-64" />
+        <select name="category"
+            class="bg-black border-2 border-white text-white px-4 py-2 text-sm font-mono focus:outline-none">
+            <option value="">[ все категории ]</option>
+            {% for cat in categories %}
+            <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>
+                {{ cat }}
+            </option>
+            {% endfor %}
+        </select>
+        <button type="submit"
+            class="border-2 border-white bg-white text-black px-6 py-2 text-sm font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors duration-150">
+            НАЙТИ
+        </button>
+        {% if search_name or selected_category %}
+        <a href="{% url 'goods' %}"
+            class="border-2 border-gray-700 text-gray-500 px-6 py-2 text-sm font-mono uppercase tracking-widest
+            hover:border-white hover:text-white transition-colors duration-150">
+            СБРОСИТЬ
+        </a>
+        {% endif %}
+    </form>
+    <!-- Счётчик -->
+    <p class="text-xs text-gray-600 mb-4 tracking-widest uppercase">
+        // найдено позиций: {{ products.count }}
+    </p>
+    <!-- Таблица -->
+    <div class="border-2 border-white">
+        <!-- Шапка -->
+        <div class="grid grid-cols-4 border-b-2 border-white">
+            <div class="px-6 py-3 text-xs font-black uppercase tracking-widest text-gray-400">Название</div>
+            <div class="px-6 py-3 text-xs font-black uppercase tracking-widest text-gray-400">Категория</div>
+            <div class="px-6 py-3 text-xs font-black uppercase tracking-widest text-gray-400">Единица</div>
+            <div class="px-6 py-3 text-xs font-black uppercase tracking-widest text-gray-400">Остаток</div>
+        </div>
+        <!-- Строки -->
+        {% for product in products %}
+        <div
+            class="grid grid-cols-4 border-b border-gray-900 hover:bg-white hover:text-black transition-colors duration-100 group last:border-0">
+            <div class="px-6 py-4 text-sm font-bold">{{ product.name }}</div>
+            <div class="px-6 py-4 text-sm text-gray-400 group-hover:text-gray-600">{{ product.category }}</div>
+            <div class="px-6 py-4 text-sm text-gray-400 group-hover:text-gray-600">{{ product.unit }}</div>
+            <div class="px-6 py-4 text-sm">
+                {% with stock=product.stock_set.first %}
+                {% if stock %}
+                <span class="font-bold">{{ stock.quantity }}</span>
+                {% else %}
+                <span class="text-gray-700">—</span>
+                {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="px-6 py-16 text-center">
+            <p class="text-gray-600 text-sm tracking-widest uppercase mb-1">// товары не найдены</p>
+            <p class="text-gray-800 text-xs">Попробуйте изменить параметры поиска</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

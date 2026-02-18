@@ -3,17 +3,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from auditlog.models import LogEntry
+from . import models
 def index(request):
     if not request.user.is_authenticated:
         return redirect('login') 
-    all_log = LogEntry.objects.filter(actor=request.user).order_by('-action_time')
-    for entry in all_log:
-        print(f"Действие: {entry.get_action_display()}") # Создание/Изменение/Удаление
-        print(f"Объект: {entry.content_type.name}")      # Тип (например, Продукт)
-        print(f"Название: {entry.object_repr}")          # Имя (например, "Чай")
-        print(f"Дата: {entry.timestamp}")
+    recent_operations = LogEntry.objects.filter(actor=request.user).order_by('-timestamp')
     context = {
-        'all_log': all_log  
+        'recent_operations': recent_operations.first()  
     }
     return render(request, 'index.html', context)
 
@@ -52,4 +48,23 @@ def logout_user(request):
 
 ## Goods
 def goods(request):
-    return render(request, 'goods/goods.html')
+    if not request.user.is_authenticated:
+        return redirect('login')
+    products = models.Product.objects.prefetch_related('stock_set').all()
+    category = request.GET.get('category', '')
+    name = request.GET.get('name', '')
+    if category:
+        products = products.filter(category=category)
+    if name:
+        products = products.filter(name__icontains=name)
+    categories = models.Product.objects.values_list('category', flat=True).distinct()
+    context = {
+        'products': products,
+        'categories': categories,
+        'selected_category': category,
+        'search_name': name,
+    }
+    return render(request, 'goods/goods.html', context)
+
+## Reports
+

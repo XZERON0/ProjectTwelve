@@ -25,7 +25,7 @@ class Product(models.Model):
     
 class Stock(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.FloatField
+    quantity = models.PositiveIntegerField()
     updated_at = models.DateTimeField
     class Meta:
         verbose_name = "Остаток"
