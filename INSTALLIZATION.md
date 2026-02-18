@@ -18,3 +18,12 @@ pip install -r requirements.txt
 python manage.py tailwind start
 python manage.py runserver
 ```
+
+## Создание установщика
+1. Вводите команду в терминал (**Важно: вы должны находится в корне директории самого ``ДЖАНГО`` проекта**)
+```python
+pyinstall --noconsole --paths . --add-data ".env" run.py
+```
+2. Скачиваете ``Inno Setup``  [кликнув сюда](https://jrsoftware.org/isdl.php)
+3. Билдите .iss файл и запускаете его
+4. Все! Установщик проекта готов

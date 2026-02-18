@@ -4,7 +4,7 @@ import os
 import decouple
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = decouple.config('SECRET_KEY', cast=str)
+SECRET_KEY = decouple.config('SECRET_KEY', cast=str, default='dev-secret-key-for-university-project')
 DEBUG = decouple.config('DEBUG', cast=bool)
 ALLOWED_HOSTS = decouple.config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')])
 INSTALLED_APPS = [

@@ -1,17 +1,17 @@
 [Setup]
 AppName=UniversityProject
 AppVersion=1.0
-DefaultDirName={pf}\UniversityProject
+DefaultDirName={autopf}\UniversityProject
 DefaultGroupName=UniversityProject
 OutputDir=output
 OutputBaseFilename=UniversityProjectInstaller
 
 [Files]
-Source: "dist\run.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\UniversityProject"; Filename: "{app}\run.exe"
 Name: "{commondesktop}\UniversityProject"; Filename: "{app}\run.exe"
 
 [Run]
-Filename: "{app}\run.exe"; Description: "Launch App"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\run\run.exe"; Description: "Launch App"; Flags: nowait postinstall skipifsilent
