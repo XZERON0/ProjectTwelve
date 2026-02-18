@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% block title %}Отчёты — СКЛАД{% endblock %}
+{% block body %}
+
+<div class="min-h-screen bg-black text-white p-8 font-mono" id="report-root">
+    {% include 'header.html' %}
+    <div class="flex items-start justify-between mb-10 mt-4">
+        <div>
+            <h1 class="text-5xl font-black uppercase tracking-tight leading-none mb-3">ОТЧЁТЫ</h1>
+            <p class="text-gray-500 text-sm tracking-widest">{ } Статистика и аналитика</p>
+        </div>
+        <button onclick="downloadReport()"
+            class="border-2 border-white bg-white text-black px-6 py-3 text-sm font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors duration-150 flex items-center gap-2">
+            ↓ СКАЧАТЬ PNG
+        </button>
+    </div>
+
+    <!-- Фильтр периода -->
+    <form method="GET" class="mb-10" id="filter-form">
+        <div class="flex flex-wrap gap-2 mb-4">
+            {% for p, label in period_choices %}
+            <a href="?period={{ p }}"
+                class="px-5 py-2 text-sm font-bold uppercase tracking-widest border-2 transition-colors duration-100
+                    {% if period == p %}bg-white text-black border-white{% else %}border-gray-700 text-gray-500 hover:border-white hover:text-white{% endif %}">
+                {{ label }}
+            </a>
+            {% endfor %}
+            <a href="#" onclick="document.getElementById('custom-range').classList.toggle('hidden'); return false;"
+                class="px-5 py-2 text-sm font-bold uppercase tracking-widest border-2 transition-colors duration-100
+                    {% if period == 'custom' %}bg-white text-black border-white{% else %}border-gray-700 text-gray-500 hover:border-white hover:text-white{% endif %}">
+                СВОЙ ПЕРИОД
+            </a>
+        </div>
+
+        <!-- Кастомный диапазон -->
+        <div id="custom-range" class="{% if period != 'custom' %}hidden{% endif %} flex gap-3 items-center">
+            <input type="hidden" name="period" value="custom">
+            <input type="date" name="date_from" value="{{ date_from }}"
+                class="bg-black border-2 border-white text-white px-4 py-2 text-sm font-mono focus:outline-none" />
+            <span class="text-gray-500">—</span>
+            <input type="date" name="date_to" value="{{ date_to }}"
+                class="bg-black border-2 border-white text-white px-4 py-2 text-sm font-mono focus:outline-none" />
+            <button type="submit"
+                class="border-2 border-white bg-white text-black px-6 py-2 text-sm font-black uppercase hover:bg-black hover:text-white transition-colors">
+                ПРИМЕНИТЬ
+            </button>
+        </div>
+    </form>
+
+    <!-- Период -->
+    <p class="text-xs text-gray-600 mb-8 tracking-widest uppercase">// период: {{ period_label }}</p>
+
+    <!-- Карточки-сводка -->
+    <div id="report-content">
+        <div class="grid grid-cols-2 gap-4 mb-8 lg:grid-cols-4">
+            <div class="border-2 border-white p-6">
+                <p class="text-xs text-gray-500 uppercase tracking-widest mb-2">Продаж (шт)</p>
+                <p class="text-4xl font-black">{{ total_sales_count }}</p>
+            </div>
+            <div class="border-2 border-white p-6">
+                <p class="text-xs text-gray-500 uppercase tracking-widest mb-2">Выручка</p>
+                <p class="text-4xl font-black">{{ total_sales_sum }}</p>
+            </div>
+            <div class="border-2 border-white p-6">
+                <p class="text-xs text-gray-500 uppercase tracking-widest mb-2">Поставок (шт)</p>
+                <p class="text-4xl font-black">{{ total_income_count }}</p>
+            </div>
+            <div class="border-2 border-white p-6">
+                <p class="text-xs text-gray-500 uppercase tracking-widest mb-2">Сумма поставок</p>
+                <p class="text-4xl font-black">{{ total_income_sum }}</p>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div class="border-2 border-white">
+                <div class="border-b-2 border-white px-6 py-3">
+                    <h2 class="text-sm font-black uppercase tracking-widest">// ТОП ТОВАРОВ ЗА ПЕРИОД</h2>
+                </div>
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-800">
+                            <th class="text-left px-6 py-3 text-xs text-gray-500 uppercase tracking-widest">Товар</th>
+                            <th class="text-left px-6 py-3 text-xs text-gray-500 uppercase tracking-widest">Кол-во</th>
+                            <th class="text-left px-6 py-3 text-xs text-gray-500 uppercase tracking-widest">Сумма</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in top_products %}
+                        <tr
+                            class="border-b border-gray-900 last:border-0 hover:bg-white hover:text-black transition-colors group">
+                            <td class="px-6 py-3 text-sm font-bold">{{ item.product__name }}</td>
+                            <td class="px-6 py-3 text-sm text-gray-400 group-hover:text-gray-600">{{ item.total_qty }}
+                            </td>
+                            <td class="px-6 py-3 text-sm text-gray-400 group-hover:text-gray-600">{{ item.total_sum }}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3"
+                                class="px-6 py-8 text-center text-gray-700 text-xs uppercase tracking-widest">
+                                // нет данных за период
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="border-2 border-white">
+                <div class="border-b-2 border-white px-6 py-3">
+                    <h2 class="text-sm font-black uppercase tracking-widest">// ОСТАТКИ НА СКЛАДЕ</h2>
+                </div>
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-800">
+                            <th class="text-left px-6 py-3 text-xs text-gray-500 uppercase tracking-widest">Товар</th>
+                            <th class="text-left px-6 py-3 text-xs text-gray-500 uppercase tracking-widest">Категория
+                            </th>
+                            <th class="text-left px-6 py-3 text-xs text-gray-500 uppercase tracking-widest">Остаток</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stock in stocks %}
+                        <tr
+                            class="border-b border-gray-900 last:border-0 hover:bg-white hover:text-black transition-colors group">
+                            <td class="px-6 py-3 text-sm font-bold">{{ stock.product.name }}</td>
+                            <td class="px-6 py-3 text-sm text-gray-400 group-hover:text-gray-600">
+                                {{stock.product.category }}
+                            </td>
+                            <td
+                                class="px-6 py-3 text-sm {% if stock.quantity == 0 %}text-red-500{% else %}text-gray-400 group-hover:text-gray-600{% endif %}">
+                                {% if stock.quantity == 0 %}ПУСТО{% else %}{{ stock.quantity }}{% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3"
+                                class="px-6 py-8 text-center text-gray-700 text-xs uppercase tracking-widest">
+                                // нет товаров на складе
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+    function downloadReport() {
+        const el = document.getElementById('report-root');
+        html2canvas(el, {
+            backgroundColor: '#000000',
+            scale: 2,
+            useCORS: true,
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'report_{{ period }}_{{ period_label|slugify }}.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    }
+</script>
+
+{% endblock %}

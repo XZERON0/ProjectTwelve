@@ -7,9 +7,13 @@ from . import models
 def index(request):
     if not request.user.is_authenticated:
         return redirect('login') 
-    recent_operations = LogEntry.objects.filter(actor=request.user).order_by('-timestamp')
+    recent_operations = LogEntry.objects.filter(actor=request.user).order_by('-timestamp')[:20]
     context = {
-        'recent_operations': recent_operations.first()  
+        'recent_operations': recent_operations,
+        'total_products': models.Product.objects.count(),
+        'categories' : models.Product.objects.values_list('category', flat=True).distinct().count(),
+        'low_stock' : models.Stock.objects.filter(quantity__lte=5).count(),
+        'total_value': sum([(income.price * income.quantity) for income in models.Income.objects.all()])
     }
     return render(request, 'index.html', context)
 
@@ -65,6 +69,3 @@ def goods(request):
         'search_name': name,
     }
     return render(request, 'goods/goods.html', context)
-
-## Reports
-

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from auditlog.registry import auditlog
 class Supplier(models.Model):
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=20)
@@ -15,7 +16,7 @@ class Product(models.Model):
     name = models.CharField(max_length=100)
     category = models.CharField(max_length=20)
     unit = models.CharField(max_length=20)
-    created_at = models.DateTimeField
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = "Продукт"
@@ -26,7 +27,7 @@ class Product(models.Model):
 class Stock(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
-    updated_at = models.DateTimeField
+    updated_at = models.DateTimeField(auto_now=True)
     class Meta:
         verbose_name = "Остаток"
         verbose_name_plural = "Остатки"
@@ -36,10 +37,10 @@ class Stock(models.Model):
 class Income(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
-    quantity = models.FloatField
+    quantity = models.FloatField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
     total_sum = models.DecimalField(max_digits=5, decimal_places=2)
-    date = models.DateTimeField
+    date = models.DateTimeField(auto_now_add=True)
     class Meta:
         verbose_name = "Поставка"
         verbose_name_plural = "Поставки"
@@ -50,7 +51,7 @@ class Income(models.Model):
 class Sale(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total_sum = models.DecimalField(max_digits=5, decimal_places=2)
-    created_at = models.DateTimeField
+    created_at = models.DateTimeField(auto_now_add=True)
     class Meta:
         verbose_name = "Продажа"
         verbose_name_plural = "Продажи"
@@ -61,7 +62,7 @@ class Sale(models.Model):
 class SaleItem(models.Model):
     sale = models.ForeignKey(Sale, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.FloatField
+    quantity = models.FloatField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
     total_sum = models.DecimalField(max_digits=5, decimal_places=2)
     class Meta:

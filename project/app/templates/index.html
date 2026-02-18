@@ -27,15 +27,15 @@
                 <h3 class="font-bold text-lg mb-1">ПРОСМОТР СКЛАДА</h3>
                 <p class="text-sm opacity-60">Все товары и их остатки</p>
             </a>
-            <a href="#" class="card-action border-black dark:border-white bg-white dark:bg-black p-7 block">
-                <div class="text-3xl font-bold mb-3">//</div>
-                <h3 class="font-bold text-lg mb-1">ПОИСК</h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Найти по названию или коду</p>
-            </a>
-            <a href="#" class="card-action border-black dark:border-white bg-white dark:bg-black p-7 block">
+            <a href="{%url 'reports'%}" class="card-action border-black dark:border-white bg-white dark:bg-black p-7 block">
                 <div class="text-3xl font-bold mb-3">{ }</div>
                 <h3 class="font-bold text-lg mb-1">ОТЧЁТЫ</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400">Статистика и аналитика</p>
+            </a>
+            <a href="#" class="card-action border-black dark:border-white bg-white dark:bg-black p-7 block">
+                <div class="text-3xl font-bold mb-3"></div>
+                <h3 class="font-bold text-lg mb-1">ПРИНЯТЬ ПОСТАВКИ</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Оформить приходные накладные</p>
             </a>
             <a href="#" class="card-action border-black dark:border-white bg-white dark:bg-black p-7 block">
                 <div class="text-3xl font-bold mb-3">→</div>
@@ -75,10 +75,12 @@
                 <div
                     class="flex items-center justify-between py-4 border-b border-gray-100 dark:border-gray-900 last:border-0">
                     <div class="flex items-center gap-4">
-                        <span class="font-bold text-sm">{{ op.type }}</span>
-                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ op.product_name }}</span>
+                        <span class="font-bold text-sm">
+                            {% if op.action == 0 %}Создание{% elif op.action == 1 %}Изменение{% elif op.action == 2 %}Удаление{% else %}Действие{% endif %}
+                        </span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ op.content_type.model }} — {{ op.object_repr }}</span>
                     </div>
-                    <span class="text-xs text-gray-400">{{ op.date }}</span>
+                    <span class="text-xs text-gray-400">{{ op.timestamp|date:"d.m.Y H:i" }}</span>
                 </div>
                 {% endfor %}
             </div>
