@@ -2,11 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from auditlog.models import LogEntry
 from . import models
+@login_required
 def index(request):
-    if not request.user.is_authenticated:
-        return redirect('login') 
     recent_operations = LogEntry.objects.filter(actor=request.user).order_by('-timestamp')[:20]
     context = {
         'recent_operations': recent_operations,
@@ -51,9 +51,8 @@ def logout_user(request):
     return redirect('index')
 
 ## Goods
+@login_required
 def goods(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
     products = models.Product.objects.prefetch_related('stock_set').all()
     category = request.GET.get('category', '')
     name = request.GET.get('name', '')
@@ -69,7 +68,7 @@ def goods(request):
         'search_name': name,
     }
     return render(request, 'goods/goods.html', context)
-
+@login_required
 def suppliers(request):
     if not request.user.is_authenticated:
         return redirect('login')

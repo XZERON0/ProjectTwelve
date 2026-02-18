@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+{% load tailwind_tags %}
+{% block title %}Операции — СКЛАД{% endblock %}
+{% block body %}
+<div class="grid-bg min-h-screen bg-white dark:bg-black text-black dark:text-white">
+    {% include 'header.html' %}
+    <main class="max-w-6xl mx-auto px-6 py-14">
+        <div class="mb-10 anim-1">
+            <h1 class="text-5xl md:text-7xl font-bold mb-3 leading-none">
+                ОПЕРАЦИИ
+            </h1>
+            <p class="text-lg text-gray-500 dark:text-gray-400">
+                Учёт прихода и расхода товаров
+            </p>
+        </div>
+        <!-- Вкладки -->
+        <div class="flex border-2 border-black dark:border-white mb-10 anim-2">
+            <a href="?tab=income{% if request.GET.page %}&page=1{% endif %}"
+                class="flex-1 text-center py-4 font-bold text-sm uppercase tracking-widest transition-all
+               {% if tab == 'income' %}bg-black dark:bg-white text-white dark:text-black{% else %}bg-white dark:bg-black text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900{% endif %}">
+                → ПРИХОД
+            </a>
+            <a href="?tab=sale{% if request.GET.page %}&page=1{% endif %}"
+                class="flex-1 text-center py-4 font-bold text-sm uppercase tracking-widest border-l-2 border-black dark:border-white transition-all
+               {% if tab == 'sale' %}bg-black dark:bg-white text-white dark:text-black{% else %}bg-white dark:bg-black text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900{% endif %}">
+                ← РАСХОД
+            </a>
+        </div>
+        {% if messages %}
+        {% for msg in messages %}
+        <div
+            class="border-2 mb-6 p-4 text-sm font-bold
+            {% if msg.tags == 'error' %}border-red-500 text-red-500{% else %}border-green-500 text-green-500{% endif %}">
+            {{ msg }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        <!-- ПРИХОД -->
+        {% if tab == 'income' %}
+        <div class="grid lg:grid-cols-2 gap-8 anim-3">
+            <!-- Форма прихода -->
+            <div class="border-2 border-black dark:border-white p-8">
+                <h2 class="text-xl font-bold mb-6">НОВЫЙ ПРИХОД</h2>
+                <form method="post" action="{% url 'operations' %}?tab=income" class="space-y-5">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="income">
+                    <div>
+                        <label
+                            class="block text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2">Товар</label>
+                        <select name="product" required
+                            class="w-full border-2 border-black dark:border-white bg-white dark:bg-black text-black dark:text-white px-4 py-3 text-sm focus:outline-none focus:ring-0">
+                            <option value="">— выберите товар —</option>
+                            {% for p in products %}
+                            <option value="{{ p.id }}">{{ p.name }} ({{ p.unit }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label
+                            class="block text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2">Поставщик</label>
+                        <select name="supplier" required
+                            class="w-full border-2 border-black dark:border-white bg-white dark:bg-black text-black dark:text-white px-4 py-3 text-sm focus:outline-none">
+                            <option value="">— выберите поставщика —</option>
+                            {% for s in suppliers %}
+                            <option value="{{ s.id }}">{{ s.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label
+                                class="block text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2">Количество</label>
+                            <input type="number" name="quantity" step="0.01" min="0.01" required
+                                class="w-full border-2 border-black dark:border-white bg-white dark:bg-black text-black dark:text-white px-4 py-3 text-sm focus:outline-none"
+                                placeholder="0">
+                        </div>
+                        <div>
+                            <label
+                                class="block text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2">Цена
+                                за ед.</label>
+                            <input type="number" name="price" step="0.01" min="0.01" required
+                                class="w-full border-2 border-black dark:border-white bg-white dark:bg-black text-black dark:text-white px-4 py-3 text-sm focus:outline-none"
+                                placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="border-t-2 border-black dark:border-white pt-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xs uppercase tracking-widest text-gray-500">Итого</span>
+                            <span id="income-total" class="text-2xl font-bold">0.00</span>
+                        </div>
+                        <button type="submit"
+                            class="w-full bg-black dark:bg-white text-white dark:text-black py-4 font-bold text-sm uppercase tracking-widest hover:opacity-80 transition-opacity">
+                            ПРОВЕСТИ ПРИХОД →
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="border-2 border-black dark:border-white p-8">
+                <h2 class="text-xl font-bold mb-6">ИСТОРИЯ ПРИХОДОВ</h2>
+                {% if incomes %}
+                <div class="space-y-0 overflow-auto max-h-[520px]">
+                    {% for inc in incomes %}
+                    <div class="py-4 border-b border-gray-100 dark:border-gray-900 last:border-0">
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="font-bold text-sm">{{ inc.product.name }}</span>
+                            <span class="text-xs text-gray-400">{{ inc.date|date:"d.m.Y H:i" }}</span>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                            <span>{{ inc.supplier.name }} · {{ inc.quantity }} {{ inc.product.unit }} · {{ inc.price }}
+                                ₽/ед.</span>
+                            <span class="font-bold text-black dark:text-white">{{ inc.total_sum }} ₽</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-16">
+                    <div class="text-4xl font-bold mb-3 text-gray-200 dark:text-gray-800">[ ]</div>
+                    <p class="text-gray-400 text-sm">Приходов пока нет</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- РАСХОД -->
+        {% elif tab == 'sale' %}
+        <div class="anim-3">
+            <!-- Форма продажи -->
+            <div class="border-2 border-black dark:border-white p-8 mb-8">
+                <h2 class="text-xl font-bold mb-6">НОВЫЙ РАСХОД / ПРОДАЖА</h2>
+                <form method="post" action="{% url 'operations' %}?tab=sale" id="sale-form" class="space-y-6">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="sale">
+                    <!-- Позиции -->
+                    <div id="sale-items">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs uppercase tracking-widest text-gray-500">Позиции</span>
+                            <button type="button" onclick="addItem()"
+                                class="border-2 border-black dark:border-white px-4 py-2 text-xs font-bold uppercase tracking-widest hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all">
+                                + ДОБАВИТЬ
+                            </button>
+                        </div>
+                        <div id="items-container" class="space-y-3">
+                            <!-- Шаблон первой строки -->
+                            <div
+                                class="sale-item grid grid-cols-12 gap-3 items-center border-2 border-gray-200 dark:border-gray-800 p-4">
+                                <div class="col-span-5">
+                                    <select name="product[]" required
+                                        class="w-full border-2 border-black dark:border-white bg-white dark:bg-black text-black dark:text-white px-3 py-2 text-sm focus:outline-none">
+                                        <option value="">— товар —</option>
+                                        {% for p in products %}
+                                        <option value="{{ p.id }}" data-unit="{{ p.unit }}">{{ p.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-span-2">
+                                    <input type="number" name="quantity[]" step="0.01" min="0.01" required
+                                        class="w-full border-2 border-black dark:border-white bg-white dark:bg-black text-black dark:text-white px-3 py-2 text-sm focus:outline-none item-qty"
+                                        placeholder="Кол-во">
+                                </div>
+                                <div class="col-span-3">
+                                    <input type="number" name="price[]" step="0.01" min="0.01" required
+                                        class="w-full border-2 border-black dark:border-white bg-white dark:bg-black text-black dark:text-white px-3 py-2 text-sm focus:outline-none item-price"
+                                        placeholder="Цена">
+                                </div>
+                                <div class="col-span-1 text-sm font-bold item-sum text-right">0</div>
+                                <div class="col-span-1 text-right">
+                                    <button type="button" onclick="removeItem(this)"
+                                        class="text-gray-400 hover:text-black dark:hover:text-white text-lg font-bold leading-none">×</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="border-t-2 border-black dark:border-white pt-5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div>
+                            <span class="text-xs uppercase tracking-widest text-gray-500 mr-4">Итого по продаже</span>
+                            <span id="sale-total" class="text-3xl font-bold">0.00</span>
+                        </div>
+                        <button type="submit"
+                            class="bg-black dark:bg-white text-white dark:text-black px-10 py-4 font-bold text-sm uppercase tracking-widest hover:opacity-80 transition-opacity">
+                            ПРОВЕСТИ РАСХОД ←
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <!-- История продаж -->
+            <div class="border-2 border-black dark:border-white p-8">
+                <h2 class="text-xl font-bold mb-6">ИСТОРИЯ РАСХОДОВ</h2>
+                {% if sales %}
+                <div class="space-y-0">
+                    {% for sale in sales %}
+                    <div class="py-4 border-b border-gray-100 dark:border-gray-900 last:border-0">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-sm">Продажа №{{ sale.id }}</span>
+                            <span class="text-xs text-gray-400">{{ sale.created_at|date:"d.m.Y H:i" }}</span>
+                        </div>
+                        <div class="space-y-1">
+                            {% for item in sale.saleitem_set.all %}
+                            <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                                <span>{{ item.product.name }} · {{ item.quantity }} {{ item.product.unit }} · {{
+                                    item.price }} ₽</span>
+                                <span>{{ item.total_sum }} ₽</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div
+                            class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+                            <span class="text-xs text-gray-400">{{ sale.user.username }}</span>
+                            <span class="font-bold text-sm">{{ sale.total_sum }} ₽</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-16">
+                    <div class="text-4xl font-bold mb-3 text-gray-200 dark:text-gray-800">{ }</div>
+                    <p class="text-gray-400 text-sm">Продаж пока нет</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </main>
+    <footer class="border-t-2 border-black dark:border-white mt-12">
+        <div
+            class="max-w-6xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-gray-400">
+            <span>СКЛАД v1.0.0 — Локальная система учёта</span>
+            <span>Все данные сохранены на вашем компьютере</span>
+        </div>
+    </footer>
+</div>
+<script>
+    const productOptions = `{% for p in products %}<option value="{{ p.id }}" data-unit="{{ p.unit }}">{{ p.name }}</option>{% endfor %}`;
+    function addItem() {
+        const container = document.getElementById('items-container');
+        const div = document.createElement('div');
+        div.className = 'sale-item grid grid-cols-12 gap-3 items-center border-2 border-gray-200 dark:border-gray-800 p-4';
+        div.innerHTML = `
+        <div class="col-span-5">
+            <select name="product[]" required
+                class="w-full border-2 border-black dark:border-white bg-white dark:bg-black text-black dark:text-white px-3 py-2 text-sm focus:outline-none">
+                <option value="">— товар —</option>
+                ${productOptions}
+            </select>
+        </div>
+        <div class="col-span-2">
+            <input type="number" name="quantity[]" step="0.01" min="0.01" required
+                class="w-full border-2 border-black dark:border-white bg-white dark:bg-black text-black dark:text-white px-3 py-2 text-sm focus:outline-none item-qty"
+                placeholder="Кол-во">
+        </div>
+        <div class="col-span-3">
+            <input type="number" name="price[]" step="0.01" min="0.01" required
+                class="w-full border-2 border-black dark:border-white bg-white dark:bg-black text-black dark:text-white px-3 py-2 text-sm focus:outline-none item-price"
+                placeholder="Цена">
+        </div>
+        <div class="col-span-1 text-sm font-bold item-sum text-right">0</div>
+        <div class="col-span-1 text-right">
+            <button type="button" onclick="removeItem(this)"
+                class="text-gray-400 hover:text-black dark:hover:text-white text-lg font-bold leading-none">×</button>
+        </div>
+    `;
+        container.appendChild(div);
+        attachListeners(div);
+        updateSaleTotal();
+    }
+    function removeItem(btn) {
+        const items = document.querySelectorAll('.sale-item');
+        if (items.length === 1) return;
+        btn.closest('.sale-item').remove();
+        updateSaleTotal();
+    }
+    function attachListeners(row) {
+        const qty = row.querySelector('.item-qty');
+        const price = row.querySelector('.item-price');
+        const sum = row.querySelector('.item-sum');
+        function calc() {
+            const q = parseFloat(qty.value) || 0;
+            const p = parseFloat(price.value) || 0;
+            sum.textContent = (q * p).toFixed(2);
+            updateSaleTotal();
+        }
+        qty.addEventListener('input', calc);
+        price.addEventListener('input', calc);
+    }
+    function updateSaleTotal() {
+        let total = 0;
+        document.querySelectorAll('.item-sum').forEach(el => {
+            total += parseFloat(el.textContent) || 0;
+        });
+        document.getElementById('sale-total').textContent = total.toFixed(2) + ' ₽';
+    }
+    // Инициализация первой строки
+    document.querySelectorAll('.sale-item').forEach(attachListeners);
+
+    // Автосчёт итога для прихода
+    const qtyInput = document.querySelector('[name="quantity"]');
+    const priceInput = document.querySelector('[name="price"]');
+    const incomeTotal = document.getElementById('income-total');
+    if (qtyInput && priceInput && incomeTotal) {
+        function calcIncome() {
+            const q = parseFloat(qtyInput.value) || 0;
+            const p = parseFloat(priceInput.value) || 0;
+            incomeTotal.textContent = (q * p).toFixed(2) + ' ₽';
+        }
+        qtyInput.addEventListener('input', calcIncome);
+        priceInput.addEventListener('input', calcIncome);
+    }
+</script>
+{% endblock %}
