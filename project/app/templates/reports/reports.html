@@ -9,10 +9,10 @@
             <h1 class="text-5xl font-black uppercase tracking-tight leading-none mb-3">ОТЧЁТЫ</h1>
             <p class="text-gray-500 text-sm tracking-widest">{ } Статистика и аналитика</p>
         </div>
-        <button onclick="downloadReport()"
+        <!-- <button onclick="downloadReport()"
             class="border-2 border-white bg-white text-black px-6 py-3 text-sm font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors duration-150 flex items-center gap-2">
             ↓ СКАЧАТЬ PNG
-        </button>
+        </button> -->
     </div>
 
     <!-- Фильтр периода -->
@@ -145,20 +145,5 @@
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script>
-    function downloadReport() {
-        const el = document.getElementById('report-root');
-        html2canvas(el, {
-            backgroundColor: '#000000',
-            scale: 2,
-            useCORS: true,
-        }).then(canvas => {
-            const link = document.createElement('a');
-            link.download = 'report_{{ period }}_{{ period_label|slugify }}.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        });
-    }
-</script>
 
 {% endblock %}
