@@ -69,3 +69,12 @@ def goods(request):
         'search_name': name,
     }
     return render(request, 'goods/goods.html', context)
+
+def suppliers(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    suppliers = models.Supplier.objects.all()
+    context = {
+        'suppliers': suppliers,
+    }
+    return render(request, 'suppliers.html', context)
