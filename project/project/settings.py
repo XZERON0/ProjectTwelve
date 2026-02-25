@@ -2,9 +2,10 @@
 from pathlib import Path
 import os
 import decouple
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+ENV_PATH = os.path.join(BASE_DIR, '.env')
 SECRET_KEY = decouple.config('SECRET_KEY', cast=str, default='dev-secret-key-for-university-project')
+
 DEBUG = decouple.config('DEBUG', cast=bool, default="True")
 ALLOWED_HOSTS = decouple.config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')], default='*')
 INSTALLED_APPS = [
@@ -25,6 +26,7 @@ INTERNAL_IPS = decouple.config('INTERNAL_IPS', cast=lambda v: [s.strip() for s i
 TAILWIND_APP_NAME = decouple.config('TAILWIND_APP_NAME', cast=str, default='theme')
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -35,6 +37,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'project.urls'
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'
 
 TEMPLATES = [
     {
@@ -58,6 +64,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 REDIS = {
     'default':
