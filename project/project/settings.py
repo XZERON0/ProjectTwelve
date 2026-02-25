@@ -5,8 +5,8 @@ import decouple
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = decouple.config('SECRET_KEY', cast=str, default='dev-secret-key-for-university-project')
-DEBUG = decouple.config('DEBUG', cast=bool)
-ALLOWED_HOSTS = decouple.config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')])
+DEBUG = decouple.config('DEBUG', cast=bool, default="True")
+ALLOWED_HOSTS = decouple.config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')], default='*')
 INSTALLED_APPS = [
     'app',
     'tailwind',
@@ -21,8 +21,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-INTERNAL_IPS = decouple.config('INTERNAL_IPS', cast=lambda v: [s.strip() for s in v.split(',')])
-TAILWIND_APP_NAME = decouple.config('TAILWIND_APP_NAME', cast=str)
+INTERNAL_IPS = decouple.config('INTERNAL_IPS', cast=lambda v: [s.strip() for s in v.split(',')], default='127.0.0.1')
+TAILWIND_APP_NAME = decouple.config('TAILWIND_APP_NAME', cast=str, default='theme')
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
